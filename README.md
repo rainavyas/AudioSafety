@@ -1,2 +1,2 @@
 # AudioSafety
-Perturb the audio to selectively mute a target ASR sysem
+Perturb the audio to selectively mute a target ASR system
