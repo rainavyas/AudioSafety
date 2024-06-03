@@ -3,7 +3,7 @@ import os
 import torch
 from tqdm import tqdm
 
-from src.tools.tools import eval_wer
+from src.tools.metrics import eval_wer
 from .prepend.model import PrependSafetyFilter
 
 class BaseSafetyFilter():
@@ -12,13 +12,13 @@ class BaseSafetyFilter():
     '''
     def __init__(self, safety_args, model, device):
         self.safety_args = safety_args
-        self.whisper_model = model.model
+        self.whisper_model = model
         self.device = device
         self._select_safety_filter_model()
 
     def _select_safety_filter_model(self):
-        if self.safety_filter_args.safety_method == 'prepend':
-            self.safety_filter_model = PrependSafetyFilter(self.whisper_model.tokenizer, safety_size=self.safety_filter_args.safety_size, device=self.device).to(self.device) 
+        if self.safety_args.safety_method == 'prepend':
+            self.safety_filter_model = PrependSafetyFilter(self.whisper_model.tokenizer, prepend_size=self.safety_args.prepend_size, device=self.device).to(self.device) 
 
     def evaluate_metrics(self, hyps, refs, metrics):
         results = {}

@@ -5,7 +5,6 @@
 import sys
 import os
 import torch
-import numpy as np
 
 from src.tools.tools import get_default_device, set_seeds
 from src.tools.args import core_args, safety_args
@@ -68,7 +67,7 @@ if __name__ == "__main__":
     # 1) No safety filter
     if not safety_args.not_none:
         print("No safety filter")
-        out = safety_filter.eval_uni_safety_filter(
+        out = safety_filter.eval_safety_filter(
             test_data,
             safety_model_dir=safety_model_dir,
             safety_epoch=-1,
@@ -81,7 +80,7 @@ if __name__ == "__main__":
 
     # 2) Safety filter
     print("Safety filter")
-    out = safety_filter.eval_uni_safety_filter(
+    out = safety_filter.eval_safety_filter(
         test_data,
         safety_model_dir=safety_model_dir,
         safety_epoch=safety_args.safety_epoch,

@@ -6,16 +6,16 @@ class PrependSafetyFilter(nn.Module):
     '''
         Safety Filter where audio segment is prepended to target speech signal
     '''
-    def __init__(self, tokenizer, safety_size=5120, device=None):
+    def __init__(self, tokenizer, prepend_size=10240, device=None):
         super(PrependSafetyFilter, self).__init__()
-        self.safety_size = safety_size
+        self.prepend_size = prepend_size
         self.tokenizer = tokenizer
         self.device = device
 
         self.sot_ids = self.tokenizer.sot_sequence
         self.len_sot_ids = len(torch.tensor(self.sot_ids))
 
-        self.prepend_segment = nn.Parameter(torch.rand(safety_size))
+        self.prepend_segment = nn.Parameter(torch.rand(prepend_size))
 
     
     def forward(self, audio_vector, whisper_model, decoder_input=None):
@@ -76,7 +76,7 @@ class PrependSafetyFilter(nn.Module):
             if isinstance(audio, str):
                 audio = load_audio(audio)
             audio = torch.from_numpy(audio).to(self.device)
-            audio = torch.cat((self.safety_segment, audio), dim=0)
+            audio = torch.cat((self.prepend_segment, audio), dim=0)
 
         return whisper_model.predict(audio, without_timestamps=without_timestamps)
 
