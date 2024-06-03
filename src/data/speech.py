@@ -43,7 +43,8 @@ def _process(fname, replace_user=None):
 
             sample = {
                     'audio': audio,
-                    'ref': ref
+                    # 'ref': ref
+                    'ref':'' # test muting
                 }
             audio_transcript_pair_list.append(sample) 
     return audio_transcript_pair_list
