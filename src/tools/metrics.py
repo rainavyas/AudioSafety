@@ -20,3 +20,9 @@ def eval_wer(hyps, refs, get_details=False):
         del_rate = out.deletions / total_ref
         sub_rate = out.substitutions / total_ref
         return {'WER': out.wer, 'INS': ins_rate, 'DEL': del_rate, 'SUB': sub_rate, 'HIT': out.hits/total_ref}
+
+def eval_frac_0(hyps):
+    '''
+        Determine the fraction of samples that are 0 length
+    '''
+    return len([hyp for hyp in hyps if hyp==''])/len(hyps)
