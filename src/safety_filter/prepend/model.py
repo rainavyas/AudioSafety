@@ -12,7 +12,8 @@ class PrependSafetyFilter(nn.Module):
         self.tokenizer = tokenizer
         self.device = device
 
-        self.sot_ids = self.tokenizer.sot_sequence
+        # self.sot_ids = self.tokenizer.sot_sequence
+        self.sot_ids = self.tokenizer.sot_sequence_including_notimestamps
         self.len_sot_ids = len(torch.tensor(self.sot_ids))
 
         self.prepend_segment = nn.Parameter(torch.rand(prepend_size))

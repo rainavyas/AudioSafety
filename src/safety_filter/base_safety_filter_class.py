@@ -3,7 +3,7 @@ import os
 import torch
 from tqdm import tqdm
 
-from src.tools.metrics import eval_wer
+from src.tools.metrics import eval_wer, eval_frac_0
 from .prepend.model import PrependSafetyFilter
 
 class BaseSafetyFilter():
@@ -24,6 +24,8 @@ class BaseSafetyFilter():
         results = {}
         if 'wer' in metrics:
             results['WER'] = eval_wer(hyps, refs)
+        if 'frac0' in metrics:
+            results['frac0'] = eval_frac_0(hyps)
         return results
 
     def eval_safety_filter(self, data, safety_model_dir=None, safety_epoch=-1, cache_dir=None, force_run=False, metrics=['wer']):

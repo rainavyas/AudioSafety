@@ -132,14 +132,24 @@ class PrependSafetyFilterTrainer(BaseSafetyFilterTrainer):
         text_lengths = []
         eot_token_id = self.whisper_model.tokenizer.eot
         print('text tokenization')
+        
+        # Find the length of the longest sequence
+        max_seq_len = 0
+        for text in texts:
+            token_ids = self.whisper_model.tokenizer.encode(text)
+            max_seq_len = max(max_seq_len, len(token_ids) + 1)  # +1 for EOT token
+        
+        # Determine the padding length
+        pad_length = min(max_seq_len, self.max_length)
+        
         for text in tqdm(texts):
             token_ids = self.whisper_model.tokenizer.encode(text)
-            if len(token_ids) >= self.max_length:
-                token_ids = token_ids[:self.max_length-1]  # Truncate to fit EOT token
+            if len(token_ids) >= pad_length:
+                token_ids = token_ids[:pad_length-1]  # Truncate to fit EOT token
             token_ids.append(eot_token_id)
             text_lengths.append(len(token_ids))  # Original length before padding
-            if len(token_ids) < self.max_length:
-                token_ids.extend([0] * (self.max_length - len(token_ids)))  # Pad
+            if len(token_ids) < pad_length:
+                token_ids.extend([0] * (pad_length - len(token_ids)))  # Pad
             tokenized_texts.append(torch.tensor(token_ids))
 
         text_token_ids = torch.stack(tokenized_texts, dim=0)
